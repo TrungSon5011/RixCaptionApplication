@@ -1,4 +1,4 @@
-package com.nui.rixcaption
+package com.nui.rixcaption.util
 
 import android.app.Activity
 import android.content.Context

@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.nui.rixcaption.util.ExecuteBinaryResponse
+import com.nui.rixcaption.util.SessionManager
+import com.nui.rixcaption.util.UtilObject
 import nl.bravobit.ffmpeg.FFmpeg
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,11 +28,15 @@ class MainFragment: Fragment() {
     private lateinit var videoView: VideoView
     private lateinit var addText: Button
     private lateinit var textEditText : EditText
+    private lateinit var dfgd: EditText
+    private var xPosition : Int = 0
+    private var yPosition : Int = 0
     private var videoUri : Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,6 +57,7 @@ class MainFragment: Fragment() {
                 addTextFunction(textString)
             }
         }
+        videoView.setOnTouchListener(HandleTouch())
         return view
     }
 
@@ -65,7 +73,7 @@ class MainFragment: Fragment() {
                     requireContext())
             sessionManager.setFirstTime(requireActivity(), false)
 
-            var videoPath = Util.getPath(context, videoUri)
+            var videoPath = UtilObject.getPath(context, videoUri)
             var outputPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath +
                     "/" + SimpleDateFormat("ddMMyyyy_HHmmss").format(Date()) + ".mp4"
 
@@ -73,7 +81,7 @@ class MainFragment: Fragment() {
             listString.add("-i")
             listString.add("${videoPath}")
             listString.add("-vf")
-            listString.add("drawtext=fontfile=${fontFile.path}: text='$textString': fontcolor=white: fontsize=40: box=1: boxcolor=black@0.5: boxborderw=5: x=200: y=200:enable='between(t,$currentTime,${currentTime+3})'")
+            listString.add("drawtext=fontfile=${fontFile.path}: text='$textString': fontcolor=white: fontsize=40: box=1: boxcolor=black@0.5: boxborderw=5: x=$xPosition: y=$yPosition:enable='between(t,$currentTime,${currentTime+3})'")
             listString.add("-codec:a")
             listString.add("copy")
             listString.add(outputPath)
@@ -86,7 +94,6 @@ class MainFragment: Fragment() {
 
 
     }
-
     private fun requestPermission() {
         ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
     }
@@ -121,6 +128,18 @@ class MainFragment: Fragment() {
 
     companion object{
         fun newInstance() = MainFragment()
+    }
+    private inner class HandleTouch: View.OnTouchListener{
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            xPosition = event?.x?.toInt() ?: 0
+            yPosition = event?.y?.toInt() ?: 0
+            when(event?.action){
+                MotionEvent.ACTION_UP -> Log.i("HandleTouch","Touch Up ")
+                MotionEvent.ACTION_DOWN -> Log.i("HandleTouch","Touch down $xPosition $yPosition")
+                MotionEvent.ACTION_MOVE -> Log.i("HandleTouch","x: $xPosition, y: $yPosition")
+            }
+            return false
+        }
     }
 
 }

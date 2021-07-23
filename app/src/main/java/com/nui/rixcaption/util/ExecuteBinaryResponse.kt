@@ -1,4 +1,4 @@
-package com.nui.rixcaption
+package com.nui.rixcaption.util
 
 import android.util.Log
 import nl.bravobit.ffmpeg.ExecuteBinaryResponseHandler
