@@ -50,8 +50,8 @@ class MainFragment: Fragment() {
         var toolbar: Toolbar  = view.findViewById(R.id.tool_bar)
         (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
         addText.setOnClickListener {
-            var textString: String? = textEditText.text?.toString()
-            if (textString == null){
+            var textString: String = textEditText.text?.toString() ?: ""
+            if (textString == ""){
                 Toast.makeText(requireContext(),"Enter text to add",Toast.LENGTH_SHORT).show()
             }else{
                 addTextFunction(textString)
@@ -67,10 +67,12 @@ class MainFragment: Fragment() {
         == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
             == PackageManager.PERMISSION_GRANTED){
+
             val listString = mutableListOf<String>()
             val sessionManager = SessionManager()
             val fontFile = UtilObject.copyFontToInternalStorage(R.font.arial_black,"arial_black",
                     requireContext())
+
             sessionManager.setFirstTime(requireActivity(), false)
 
             var videoPath = UtilObject.getPath(context, videoUri)

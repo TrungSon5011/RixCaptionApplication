@@ -9,6 +9,7 @@ import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.RequiresApi
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -42,6 +43,7 @@ object UtilObject {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun getPath(context: Context?, uri: Uri?): String? {
             val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
 
